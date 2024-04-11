@@ -2,10 +2,27 @@
 
 # Function to handle exit signal
 cleanup() {
-    echo "Exiting..."
+    echo -e "\nExiting..."
     exit 1
 }
 trap cleanup EXIT
+
+# Check if ffmpeg is installed
+if ! command -v ffmpeg &> /dev/null
+then
+    echo "ffmpeg could not be found"
+    while true; do
+        read -rep "Would you like to install ffmpeg? y/n: " -i "" ffmpegInstall
+        if [ "$ffmpegInstall" == "y" ]; then
+            sudo snap install ffmpeg
+            break
+            elif [ "$ffmpegInstall" == "n" ]; then
+            exit
+        else
+            echo "Invalid input"
+        fi
+    done
+fi
 
 mapfile -t Inputs < <(ls ./inputs)
 
